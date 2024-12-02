@@ -1,6 +1,6 @@
-FROM alpine:latest
+FROM --platform=$BUILDPLATFORM alpine:latest
 
-MAINTAINER George Tsopouridis <gtsopour@gmail.com>
+MAINTAINER Johan Silkens <me@jsilkens.be>
 
 #https://github.com/sgerrand/alpine-pkg-glibc/releases
 ENV GLIBC_VERSION=2.34-r0
@@ -14,7 +14,7 @@ RUN apk --no-cache add curl \
     && apk add --no-cache \
         glibc-${GLIBC_VERSION}.apk \
         glibc-bin-${GLIBC_VERSION}.apk \
-    && curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip \
+    && curl -sL https://awscli.amazonaws.com/awscli-exe-linux-${TARGETARCH}.zip -o awscliv2.zip \
     && unzip awscliv2.zip \
     && aws/install \
     && rm -rf \
@@ -26,7 +26,7 @@ RUN apk --no-cache add curl \
         glibc-*.apk
 
 #Install kubectl
-RUN curl --silent -L https://storage.googleapis.com/kubernetes-release/release/$(curl -Ls https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl \
+RUN curl --silent -L https://storage.googleapis.com/kubernetes-release/release/$(curl -Ls https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/${TARGETARCH}/kubectl -o /usr/local/bin/kubectl \
     && chmod +x /usr/local/bin/kubectl \
     && apk --no-cache del curl \
     && rm -rf /var/cache/apk/* \

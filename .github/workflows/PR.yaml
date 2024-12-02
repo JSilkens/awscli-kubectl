@@ -1,0 +1,21 @@
+name: PR Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image:${{ github.sha }}
+      
+    - name: Run tests
+      run: |
+        docker run my-image:${{ github.sha }} aws --version
+        docker run my-image:${{ github.sha }} kubectl version --client
