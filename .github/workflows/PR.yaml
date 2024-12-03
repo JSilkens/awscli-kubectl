@@ -1,0 +1,32 @@
+name: PR Pipeline
+
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      
+    - name: Build the Docker image (x86_64)
+      run: docker build . --file Dockerfile --tag jsilkens/awscli-kubectl:${{ github.sha }} --platform linux/amd64
+      
+    - name: Build the Docker image (ARM)
+      run: docker build . --file Dockerfile --tag jsilkens/awscli-kubectl:${{ github.sha }} --platform linux/arm64
+      
+    - name: Run tests
+      run: |
+        docker run jsilkens/awscli-kubectl:${{ github.sha }} aws --version
+        docker run jsilkens/awscli-kubectl:${{ github.sha }} aws --version
+        docker run jsilkens/awscli-kubectl:${{ github.sha }} kubectl version --client
+        docker run jsilkens/awscli-kubectl:${{ github.sha }} kubectl version --client
