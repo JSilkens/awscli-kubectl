@@ -12,10 +12,18 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image:${{ github.sha }}
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      
+    - name: Build the Docker image (x86_64)
+      run: docker build . --file Dockerfile --tag my-image:${{ github.sha }} --platform linux/amd64
+      
+    - name: Build the Docker image (ARM)
+      run: docker build . --file Dockerfile --tag my-image-arm:${{ github.sha }} --platform linux/arm64
       
     - name: Run tests
       run: |
         docker run my-image:${{ github.sha }} aws --version
+        docker run my-image-arm:${{ github.sha }} aws --version
         docker run my-image:${{ github.sha }} kubectl version --client
+        docker run my-image-arm:${{ github.sha }} kubectl version --client
