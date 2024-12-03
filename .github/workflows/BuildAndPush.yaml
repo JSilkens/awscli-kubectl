@@ -23,7 +23,7 @@ jobs:
         
     - name: Push the image to Docker Hub
       run: |
-        docker tag my-image:${{ github.sha }} my-username/my-image:${{ github.sha }}
-        docker push my-username/my-image:${{ github.sha }}
-        docker tag my-image:${{ github.sha }} my-username/my-image:latest
-        docker push my-username/my-image:latest
+        docker tag my-image:${{ github.sha }} jsilkens/awscli-kubectl:${{ github.sha }}
+        docker push jsilkens/awscli-kubectl:${{ github.sha }}
+        docker tag my-image:${{ github.sha }} jsilkens/awscli-kubectl:latest
+        docker push jsilkens/awscli-kubectl:latest
